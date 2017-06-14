@@ -1,0 +1,226 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.opmw.org/export/resource/WorkflowExecutionProcess/HTMLTOTEXTNODE1496950503258>
+        a           <http://www.opmw.org/ontology/WorkflowExecutionProcess> , <http://purl.org/net/opmv/ns#Process> ;
+        rdfs:label  "Execution process htmltotextNode" ;
+        <http://openprovenance.org/model/opmo#account>
+                <http://www.opmw.org/export/resource/WorkflowExecutionAccount/ACCOUNT-1496950503258> ;
+        <http://purl.org/net/opmv/ns#used>
+                <http://www.opmw.org/export/resource/WorkflowExecutionArtifact/INPUTFILE_HTML_OR_XML1496950503258> ;
+        <http://purl.org/net/opmv/ns#wasControlledBy>
+                <http://www.opmw.org/export/resource/Agent/TIRTH> ;
+        <http://purl.org/net/p-plan#correspondsToStep>
+                <http://www.opmw.org/export/resource/WorkflowTemplateProcess/ABSTRACTTEST1_CONVERTTOTEXT_NODE> ;
+        <http://www.opmw.org/ontology/correspondsToTemplateProcess>
+                <http://www.opmw.org/export/resource/WorkflowTemplateProcess/ABSTRACTTEST1_CONVERTTOTEXT_NODE> ;
+        <http://www.opmw.org/ontology/hasExecutableComponent>
+                [ rdfs:label  "Executable Component associated to htmltotextNode" ;
+                  <http://www.opmw.org/ontology/hasLocation>
+                          "/opt/wings/storage/default/users/tirth/TestingDomain/code/library/htmltotext/run"
+                ] ;
+        <http://www.opmw.org/ontology/hasStatus>
+                "SUCCESS" .
+
+<http://www.opmw.org/export/resource/Agent/TIRTH>
+        a           <http://purl.org/net/opmv/ns#Agent> ;
+        rdfs:label  "Agent tirth" ;
+        <http://openprovenance.org/model/opmo#account>
+                <http://www.opmw.org/export/resource/WorkflowExecutionAccount/ACCOUNT-1496950503258> .
+
+rdfs:comment  a  owl:DatatypeProperty .
+
+<http://www.opmw.org/export/resource/WorkflowExecutionAccount/ACCOUNT-1496950503258>
+        a           <http://openprovenance.org/model/opmo#Account> , <http://www.opmw.org/ontology/WorkflowExecutionAccount> ;
+        rdfs:label  "Execution account created on 1496950503258" ;
+        <http://purl.org/dc/elements/1.1/rights>
+                "http://creativecommons.org/licenses/by-sa/3.0/"^^xsd:anyURI ;
+        <http://www.opmw.org/ontology/correspondsToTemplate>
+                <http://www.opmw.org/export/resource/WorkflowTemplate/ABSTRACTTEST1> ;
+        <http://www.opmw.org/ontology/hasOriginalLogFile>
+                "http://ontosoft.isi.edu:8080/wings-portal/export/users/tirth/TestingDomain/executions/abstractTest1-8d-98b6b083-ecb0-49b8-bc4a-85bddddc9243.owl#"^^xsd:anyURI ;
+        <http://www.opmw.org/ontology/hasStatus>
+                "SUCCESS" ;
+        <http://www.opmw.org/ontology/overallEndTime>
+                "2017-05-26T20:55:40.199Z"^^xsd:dateTime ;
+        <http://www.opmw.org/ontology/overallStartTime>
+                "2017-05-26T20:55:39.94Z"^^xsd:dateTime .
+
+<http://ontosoft.isi.edu:8080/wings-portal/export/users/tirth/TestingDomain/data/ontology.owl#hasTopic>
+        a       owl:DatatypeProperty .
+
+<http://www.opmw.org/ontology/WorkflowExecutionProcess>
+        a       owl:Class .
+
+<http://purl.org/net/opmv/ns#Artifact>
+        a       owl:Class .
+
+<http://ontosoft.isi.edu:8080/wings-portal/export/users/tirth/TestingDomain/data/ontology.owl#hasLanguage>
+        a       owl:DatatypeProperty .
+
+<http://www.opmw.org/export/resource/WorkflowExecutionProcess/COUNTINGWORDSNODE1496950503258>
+        a           <http://www.opmw.org/ontology/WorkflowExecutionProcess> , <http://purl.org/net/opmv/ns#Process> ;
+        rdfs:label  "Execution process countingWordsNode" ;
+        <http://openprovenance.org/model/opmo#account>
+                <http://www.opmw.org/export/resource/WorkflowExecutionAccount/ACCOUNT-1496950503258> ;
+        <http://purl.org/net/opmv/ns#used>
+                <http://www.opmw.org/export/resource/WorkflowExecutionArtifact/WORDINPUT1496950503258> , <http://www.opmw.org/export/resource/WorkflowExecutionArtifact/INTERMEDIATE_RESULT1496950503258> ;
+        <http://purl.org/net/opmv/ns#wasControlledBy>
+                <http://www.opmw.org/export/resource/Agent/TIRTH> ;
+        <http://purl.org/net/p-plan#correspondsToStep>
+                <http://www.opmw.org/export/resource/WorkflowTemplateProcess/ABSTRACTTEST1_COUNTINGWORDS_NODE> ;
+        <http://www.opmw.org/ontology/correspondsToTemplateProcess>
+                <http://www.opmw.org/export/resource/WorkflowTemplateProcess/ABSTRACTTEST1_COUNTINGWORDS_NODE> ;
+        <http://www.opmw.org/ontology/hasExecutableComponent>
+                [ rdfs:label  "Executable Component associated to countingWordsNode" ;
+                  <http://www.opmw.org/ontology/hasLocation>
+                          "/opt/wings/storage/default/users/tirth/TestingDomain/code/library/countingWords/run"
+                ] ;
+        <http://www.opmw.org/ontology/hasStatus>
+                "SUCCESS" .
+
+<http://www.opmw.org/ontology/hasOriginalLogFile>
+        a       owl:DatatypeProperty .
+
+rdfs:label  a   rdf:Property , owl:DatatypeProperty .
+
+<http://www.opmw.org/ontology/correspondsToTemplateProcess>
+        a       rdf:Property .
+
+<http://www.opmw.org/ontology/createdInWorkflowSystem>
+        a       owl:DatatypeProperty .
+
+<http://openprovenance.org/model/opmo#account>
+        a       rdf:Property .
+
+<http://www.opmw.org/ontology/hasLocation>
+        a       owl:DatatypeProperty , rdf:Property .
+
+<http://www.opmw.org/ontology/hasSize>
+        a       owl:DatatypeProperty .
+
+<http://www.opmw.org/export/resource/WorkflowExecutionArtifact/WORDINPUT1496950503258>
+        a           <http://purl.org/net/opmv/ns#Artifact> , <http://www.opmw.org/ontology/WorkflowExecutionArtifact> ;
+        rdfs:label  "Parameter with value: great" ;
+        <http://openprovenance.org/model/opmo#account>
+                <http://www.opmw.org/export/resource/WorkflowExecutionAccount/ACCOUNT-1496950503258> ;
+        <http://purl.org/net/p-plan#correspondsToVariable>
+                <http://www.opmw.org/export/resource/ParameterVariable/ABSTRACTTEST1_WORDINPUT> ;
+        <http://www.opmw.org/ontology/correspondsToTemplateArtifact>
+                <http://www.opmw.org/export/resource/ParameterVariable/ABSTRACTTEST1_WORDINPUT> ;
+        <http://www.opmw.org/ontology/hasValue>
+                "great" .
+
+<http://purl.org/net/opmv/ns#wasGeneratedBy>
+        a       rdf:Property .
+
+<http://purl.org/net/p-plan#correspondsToVariable>
+        a       rdf:Property .
+
+<http://www.opmw.org/ontology/correspondsToTemplateArtifact>
+        a       rdf:Property .
+
+<http://www.opmw.org/ontology/hasStatus>
+        a       owl:DatatypeProperty .
+
+<http://purl.org/net/opmv/ns#wasControlledBy>
+        a       rdf:Property .
+
+<http://www.opmw.org/export/resource/WorkflowExecutionArtifact/INPUTFILE_HTML_OR_XML1496950503258>
+        a             "http://ontosoft.isi.edu:8080/wings-portal/export/users/tirth/TestingDomain/data/ontology.owl#HTMLfile" , "http://purl.org/net/wf-invocation#Variable" ;
+        a             <http://www.opmw.org/ontology/WorkflowExecutionArtifact> , <http://purl.org/net/opmv/ns#Artifact> ;
+        rdfs:comment  "center:x=160.701757144928,y=30.331192016601562" ;
+        rdfs:label    "Workflow execution artifact: InputFile_html_or_xml1496950503258" ;
+        <http://ontosoft.isi.edu:8080/wings-portal/export/users/tirth/TestingDomain/data/ontology.owl#hasLanguage>
+                "english" ;
+        <http://ontosoft.isi.edu:8080/wings-portal/export/users/tirth/TestingDomain/data/ontology.owl#hasTopic>
+                "basic" ;
+        <http://openprovenance.org/model/opmo#account>
+                <http://www.opmw.org/export/resource/WorkflowExecutionAccount/ACCOUNT-1496950503258> ;
+        <http://purl.org/net/p-plan#correspondsToVariable>
+                <http://www.opmw.org/export/resource/DataVariable/ABSTRACTTEST1_INPUTFILE_HTML_OR_XML> ;
+        <http://www.opmw.org/ontology/correspondsToTemplateArtifact>
+                <http://www.opmw.org/export/resource/DataVariable/ABSTRACTTEST1_INPUTFILE_HTML_OR_XML> ;
+        <http://www.opmw.org/ontology/hasLocation>
+                "/opt/wings/storage/default/users/tirth/TestingDomain/data/test1.html"^^xsd:anyURI ;
+        <http://www.opmw.org/ontology/hasSize>
+                "4" .
+
+<http://www.opmw.org/ontology/correspondsToTemplate>
+        a       rdf:Property .
+
+<http://www.opmw.org/export/resource/WorkflowExecutionArtifact/INTERMEDIATE_RESULT1496950503258>
+        a             "http://purl.org/net/wf-invocation#Variable" ;
+        a             <http://www.opmw.org/ontology/WorkflowExecutionArtifact> , <http://purl.org/net/opmv/ns#Artifact> ;
+        rdfs:comment  "center:x=159.60088329315187,y=196.99678802490234" ;
+        rdfs:label    "Workflow execution artifact: Intermediate_Result1496950503258" ;
+        <http://openprovenance.org/model/opmo#account>
+                <http://www.opmw.org/export/resource/WorkflowExecutionAccount/ACCOUNT-1496950503258> ;
+        <http://purl.org/net/opmv/ns#wasGeneratedBy>
+                <http://www.opmw.org/export/resource/WorkflowExecutionProcess/HTMLTOTEXTNODE1496950503258> ;
+        <http://purl.org/net/p-plan#correspondsToVariable>
+                <http://www.opmw.org/export/resource/DataVariable/ABSTRACTTEST1_INTERMEDIATE_RESULT> ;
+        <http://www.opmw.org/ontology/correspondsToTemplateArtifact>
+                <http://www.opmw.org/export/resource/DataVariable/ABSTRACTTEST1_INTERMEDIATE_RESULT> ;
+        <http://www.opmw.org/ontology/hasLocation>
+                "/opt/wings/storage/default/users/tirth/TestingDomain/data/Intermediate_Result-dgkic20dcccli7po0vetzivc"^^xsd:anyURI .
+
+<http://www.opmw.org/ontology/overallEndTime>
+        a       owl:DatatypeProperty .
+
+<http://www.opmw.org/ontology/hasExecutableComponent>
+        a       rdf:Property .
+
+<http://purl.org/net/opmv/ns#Agent>
+        a       owl:Class .
+
+rdf:type  a     owl:DatatypeProperty .
+
+<http://www.opmw.org/ontology/overallStartTime>
+        a       owl:DatatypeProperty .
+
+<http://purl.org/net/opmv/ns#Process>
+        a       owl:Class .
+
+<http://www.opmw.org/export/resource/WorkflowExecutionArtifact/FINAL_OUTPUT1496950503258>
+        a             "http://purl.org/net/wf-invocation#Variable" ;
+        a             <http://purl.org/net/opmv/ns#Artifact> , <http://www.opmw.org/ontology/WorkflowExecutionArtifact> ;
+        rdfs:comment  "center:x=262.99648571014404,y=363.66526222229004" ;
+        rdfs:label    "Workflow execution artifact: Final_Output1496950503258" ;
+        <http://openprovenance.org/model/opmo#account>
+                <http://www.opmw.org/export/resource/WorkflowExecutionAccount/ACCOUNT-1496950503258> ;
+        <http://purl.org/net/opmv/ns#wasGeneratedBy>
+                <http://www.opmw.org/export/resource/WorkflowExecutionProcess/COUNTINGWORDSNODE1496950503258> ;
+        <http://purl.org/net/p-plan#correspondsToVariable>
+                <http://www.opmw.org/export/resource/DataVariable/ABSTRACTTEST1_FINAL_OUTPUT> ;
+        <http://www.opmw.org/ontology/correspondsToTemplateArtifact>
+                <http://www.opmw.org/export/resource/DataVariable/ABSTRACTTEST1_FINAL_OUTPUT> ;
+        <http://www.opmw.org/ontology/hasLocation>
+                "/opt/wings/storage/default/users/tirth/TestingDomain/data/Final_Output-d7ezuz03ey3kmk4bzb8gida6u"^^xsd:anyURI .
+
+<http://purl.org/net/p-plan#correspondsToStep>
+        a       rdf:Property .
+
+<http://www.opmw.org/ontology/hasValue>
+        a       owl:DatatypeProperty .
+
+<http://www.opmw.org/ontology/WorkflowExecutionArtifact>
+        a       owl:Class .
+
+<http://www.opmw.org/ontology/WorkflowExecutionAccount>
+        a       owl:Class .
+
+<http://purl.org/net/opmv/ns#used>
+        a       rdf:Property .
+
+<http://www.opmw.org/export/resource/WorkflowTemplate/ABSTRACTTEST1>
+        <http://www.opmw.org/ontology/createdInWorkflowSystem>
+                "http://wings-workflows.org/"^^xsd:anyURI .
+
+<http://purl.org/dc/elements/1.1/rights>
+        a       owl:DatatypeProperty .
+
+<http://openprovenance.org/model/opmo#Account>
+        a       owl:Class .
