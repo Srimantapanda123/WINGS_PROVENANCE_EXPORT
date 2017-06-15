@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -175,9 +176,9 @@ public class Mapper {
         }
         
         
-      //ADDITION BY TIRTH**************//
-    	boolean ans=ExpandedTemplateLinkingCheckerforTemplates();
-    	//**************//
+//      //ADDITION BY TIRTH**************//
+//    	boolean ans=ExpandedTemplateLinkingCheckerforTemplates();
+//    	//**************//
     	
     	
         //retrieval of the name of the workflowTemplate
@@ -220,13 +221,13 @@ public class Mapper {
                 res.getURI(),Constants.PROV_HAD_PRIMARY_SOURCE, XSDDatatype.XSDanyURI);
             
             
-          // ADDITIONS BY TIRTH************************************//
-            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE TEMPLATE TO THE EXPANDED TEMPLATE
-            if(ans==true)
-            {
-            this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+templateName, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE, Constants.OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE);
-            }
-          //************************************//
+//          // ADDITIONS BY TIRTH************************************//
+//            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE TEMPLATE TO THE EXPANDED TEMPLATE
+//            if(ans==true)
+//            {
+//            this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+templateName, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE, Constants.OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE);
+//            }
+//          //************************************//
             
         }        
         
@@ -315,13 +316,18 @@ public class Mapper {
                     Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+templateName,                    
                         Constants.P_PLAN_PROP_IS_STEP_OF_PLAN);
             
-          //ADDITIONS BY TIRTH************************************//
-            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW TEMPLATE PROCESS TO THE EXPANDED TEMPLATE PROCESS
-            if(ans==true)
-            {
-            this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName_+res.getLocalName(), Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS, Constants.OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE_PROCESS);
-            }
-          //************************************//
+            
+         
+            
+            
+            
+//          //ADDITIONS BY TIRTH************************************//
+//            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW TEMPLATE PROCESS TO THE EXPANDED TEMPLATE PROCESS
+//            if(ans==true)
+//            {
+//            this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName_+res.getLocalName(), Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS, Constants.OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE_PROCESS);
+//            }
+//          //************************************//
         }
         //retrieval of the dataVariables
         String queryDataV = Queries.queryDataV2();
@@ -374,13 +380,13 @@ public class Mapper {
                         Constants.OPMW_PROP_IS_VARIABLE_OF_TEMPLATE);
             
             
-          //ADDITIONS BY TIRTH************************************//
-            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW TEMPLATE DATA_VARIABLE TO THE EXPANDED TEMPLATE DATA VARIABLE
-            if(ans==true)
-            {
-            this.addProperty(OPMWModel, Constants.CONCEPT_DATA_VARIABLE+"/"+templateName_+variable.getLocalName(), Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE, Constants.OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE_ARTIFACT);
-            }
-          //************************************//
+//          //ADDITIONS BY TIRTH************************************//
+//            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW TEMPLATE DATA_VARIABLE TO THE EXPANDED TEMPLATE DATA VARIABLE
+//            if(ans==true)
+//            {
+//            this.addProperty(OPMWModel, Constants.CONCEPT_DATA_VARIABLE+"/"+templateName_+variable.getLocalName(), Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE, Constants.OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE_ARTIFACT);
+//            }
+//          //************************************//
             
         }
         //retrieval of the parameterVariables
@@ -406,13 +412,13 @@ public class Mapper {
                     Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+templateName,                    
                         Constants.OPMW_PROP_IS_PARAMETER_OF_TEMPLATE);
             
-            //ADDITIONS BY TIRTH************************************//
-            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW TEMPLATE PARAMETER_VARIABLE TO THE EXPANDED TEMPLATE ARTIFACT
-            if(ans==true)
-            {
-            this.addProperty(OPMWModel, Constants.CONCEPT_PARAMETER_VARIABLE+"/"+templateName_+res.getLocalName(), Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE, Constants.OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE_ARTIFACT);
-            }
-          //************************************//
+//            //ADDITIONS BY TIRTH************************************//
+//            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW TEMPLATE PARAMETER_VARIABLE TO THE EXPANDED TEMPLATE ARTIFACT
+//            if(ans==true)
+//            {
+//            this.addProperty(OPMWModel, Constants.CONCEPT_PARAMETER_VARIABLE+"/"+templateName_+res.getLocalName(), Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE, Constants.OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE_ARTIFACT);
+//            }
+//          //************************************//
             
         }
 
@@ -590,9 +596,9 @@ public class Mapper {
     public String transformWINGSResultsToOPMW(String resultFile, String libraryFile, String modeFile, 
         String outFilenameOPMW, String outFilenamePROV, String suffix){
     	
-    	//ADDITION BY TIRTH**************//
-    	boolean ans=ExpandedTemplateLinkingCheckerforResults();
-    	//**************//
+//    	//ADDITION BY TIRTH**************//
+//    	boolean ans=ExpandedTemplateLinkingCheckerforResults();
+//    	//**************//
     	
     	
         //clean previous transformations        
@@ -627,9 +633,12 @@ public class Mapper {
             expandedTemplateName=qs.getResource("?expandedTemplate").getLocalName();
 //            this.loadResultFileToLocalRepository(template.getURI(), modeFile);
 //            System.out.println("Loaded the original template successfully ...");
+            
+            System.out.println("expanded template URI : "+expandedTemplateURI);
             this.loadResultFileToLocalRepository(expandedTemplateURI, modeFile);
             System.out.println("Loaded the expanded template successfully ...");
             this.loadResultFileToLocalRepository(wfInstance, modeFile);
+           // System.out.println(wfInstance);
             System.out.println("Loaded the workflow instance successfully ...");
         }else{
             System.err.println("The template, expanded template or workflow instance are not available. ");
@@ -662,16 +671,146 @@ public class Mapper {
         
         //ADDITIONS BY TIRTH************************************//
         // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE EXECUTION ACCOUNT TO THE EXPANDED TEMPLATE
-        if(ans==true)
-        {
-        this.addProperty(OPMWModel, accname, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE);
-        }
+//        if(ans==true)
+//        {
+        this.addProperty(OPMWModel, accname, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE);
+//        }
       //************************************//
         
         //p-plan interop
         this.addProperty(PROVModel,accname,
                 Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+templateName,
                     Constants.PROV_WAS_DERIVED_FROM);
+        
+        //AT THIS STAGE WE HAVE GOT THE EXPANDED TEMPLATE NAME AND URI AND WE ARE STARTING TO ACQUIRE THE EXPANDED TEMPLATE
+        //AND TRYING TO REPLICATE THE ELABORATE TEMPLATE FROM THE WINGSEXECUTIONRESULTS MODEL THAT HAS LOADED THE EXPANDED
+        //TEMPLATE FILE
+        
+        //CAPTURING THE EXPANDED TEMPLATE AS A GRAPH, CAPTURING THE VERSION NUMBER, AND DATA PROP FOR NATIVE SYSTEM TEMPLATE
+        //ADDED A PROPERTY FOR CONNECTING THE EXECUTION ACCOUNT TO THE EXPANDED TEMPLATE AND THE EXPANDED TEMPLATE TO THE TEMPLATE
+        String queryNameWfTemplate = Queries.queryNameWfTemplate();
+        String templateName_ = null;
+        ResultSet r1 = queryLocalWINGSResultsRepository(queryNameWfTemplate);
+        if(r1.hasNext()){//there should be just one local name per template
+            QuerySolution qs = r1.next();
+            
+            Literal v = qs.getLiteral("?ver");
+            
+            //add the expanded template as a provenance graph
+            this.addIndividual(OPMWModel,expandedTemplateName, Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE, expandedTemplateName);
+              
+            if(v!=null){
+                this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,""+ v.getInt(),
+                        Constants.OPMW_DATA_PROP_VERSION_NUMBER, XSDDatatype.XSDint);
+            }
+            //add the uri of the original log file (native system template)
+            this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, 
+                    expandedTemplateURI,Constants.OPMW_DATA_PROP_HAS_NATIVE_SYSTEM_TEMPLATE, XSDDatatype.XSDanyURI);
+            
+        }
+        
+        this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, Constants.CONCEPT_WORKFLOW_TEMPLATE + "/" + templateName, Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE);
+        
+        //THE EXPANDED TEMPLATE ONLY HAS METADATA-CONTRIBUTOR WHICH IS CAPTURED BELOW
+        String queryMetadataforExandedTemplate = Queries.queryMetadata();
+        r1 = null;
+        r1 = queryLocalWINGSResultsRepository(queryMetadataforExandedTemplate);
+        while(r1.hasNext())
+        {
+        	System.out.println("inside for the contributor");
+            QuerySolution qs = r1.next();
+            Literal contrib = qs.getLiteral("?contrib");
+            
+            if(contrib!=null){
+            	System.out.println("contributor is:"+contrib.getString());
+                this.addIndividual(OPMWModel,contrib.getString(), Constants.OPM_AGENT,"Agent "+contrib.getString());
+                this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,Constants.CONCEPT_AGENT+"/"+contrib.getString(),
+                        Constants.PROP_HAS_CONTRIBUTOR);
+                
+                
+            }
+            
+            
+        }
+        
+        System.out.println("---------------------");
+        //NODE LINKING CODE
+        ArrayList<String> arrForExpandedTemplateNodes=new ArrayList<>();
+        String queryNodesforExpandedTemplate = Queries.queryNodes();
+        r1 = null;
+        r1 = queryLocalWINGSResultsRepository(queryNodesforExpandedTemplate);
+        while(r1.hasNext()){
+            QuerySolution qs = r1.next();
+            Resource res = qs.getResource("?n");
+            Resource comp = qs.getResource("?c");
+            Resource typeComp = qs.getResource("?typeComp");
+            Literal rule = qs.getLiteral("?rule");
+            //Literal isConcrete = qs.getLiteral("?isConcrete");
+            System.out.println("this is inside the node linking new expanded");
+            System.out.println(res+" Node has component "+comp+" of type: "+ typeComp);//+ " which is concrete: "+isConcrete.getBoolean()
+            //add each of the nodes as a UniqueTemplateProcess
+            this.addIndividual(OPMWModel,expandedTemplateName+"_"+res.getLocalName(),Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE_PROCESS, "Workflow expanded template process "+res.getLocalName());
+               
+            if(typeComp.isURIResource()){ //only adds the type if the type is a uRI (not a blank node)
+                String tempURI = encode(Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+templateName_+res.getLocalName());
+                OntClass cAux1 = OPMWModel.createClass(typeComp.getURI());//repeated tuples will not be duplicated
+                cAux1.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+tempURI);
+            }else{
+                System.out.println("ANON RESOURCE "+typeComp.getURI()+" ignored");
+            }
+            if(rule!=null){
+                //rules are strings
+                this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+res.getLocalName(),
+                    rule.getString(),                    
+                        Constants.WINGS_PROP_HAS_RULE);
+            }
+            this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+res.getLocalName(),
+                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,                    
+                        Constants.OPMW_PROP_IS_STEP_OF_TEMPLATE);   
+            
+            arrForExpandedTemplateNodes.add(res.getLocalName());
+           
+        }
+        System.out.println();
+        System.out.println("EXPANDED TEMPLATE NODES ARE: ");
+        for(String x: arrForExpandedTemplateNodes)
+        	System.out.println(x);
+        System.out.println();
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         //account metadata: start time, end time, user, license and status.                
         String queryMetadata = Queries.queryExecutionMetadata();
@@ -799,6 +938,8 @@ public class Mapper {
         /********************* NODE LINKING**********************/
         /********************************************************/
         //query for detecting steps, their inputs and their outputs
+        ArrayList<String> arrForExpandedTemplate1=new ArrayList<>();
+        ArrayList<String> arrForExpandedTemplate2=new ArrayList<>();
         String queryStepsAndIO = Queries.queryStepsAndMetadata();
         r = queryLocalWINGSResultsRepository(queryStepsAndIO);
         String stepName, sStartT = null, sEndT = null, sStatus, sCode, derivedFrom = null;        
@@ -897,14 +1038,19 @@ public class Mapper {
             this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date,
                     Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName+"_"+derivedFrom,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_PROCESS);
+            System.out.println("the checking part is here:"+stepName +" ----> "+derivedFrom);
             
-          //ADDITIONS BY TIRTH************************************//
-            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW EXECUTION PROCESS TO THE EXPANDED TEMPLATE PROCESS
-            if(ans==true)
-            {
-            this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+derivedFrom, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_PROCESS);
-            }
-          //************************************//
+            arrForExpandedTemplate1.add(Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date);
+            arrForExpandedTemplate2.add(Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName+"_"+derivedFrom);
+            
+            
+//          //ADDITIONS BY TIRTH************************************//
+//            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW EXECUTION PROCESS TO THE EXPANDED TEMPLATE PROCESS
+//            if(ans==true)
+//            {
+//            this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+derivedFrom, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_PROCESS);
+//            }
+//          //************************************//
             
            
             //p-plan interop
@@ -912,6 +1058,20 @@ public class Mapper {
                     Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName+"_"+derivedFrom,
                         Constants.P_PLAN_PROP_CORRESPONDS_TO_STEP);
         }
+        
+        
+        System.out.println("checking if the array 1 is filled:");
+        for(String s1:arrForExpandedTemplate1)
+        	System.out.println(s1);
+        System.out.println("-----------------");
+        System.out.println("checking if the array 2 is filled:");
+        for(String s1:arrForExpandedTemplate2)
+        	System.out.println(s1);
+        
+        
+        
+        
+        
         //annotation of inputs
         String getInputs = Queries.queryStepInputs();
         r = queryLocalWINGSResultsRepository(getInputs);
@@ -942,6 +1102,8 @@ public class Mapper {
             
         }
         //parameters are separated (in expanded template). 
+        ArrayList<String> arrForExpandedTemplateParameters1=new ArrayList<>();
+        ArrayList<String> arrForExpandedTemplateParameters2=new ArrayList<>();
         String getParams = Queries.querySelectStepParameterValues();
         r = queryLocalWINGSResultsRepository(getParams);
         String paramName, paramvalue, derived = null;
@@ -974,14 +1136,16 @@ public class Mapper {
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date,
                         Constants.CONCEPT_PARAMETER_VARIABLE+"/"+templateName+"_"+derived,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
+                arrForExpandedTemplateParameters1.add(Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date);
+                arrForExpandedTemplateParameters2.add(Constants.CONCEPT_PARAMETER_VARIABLE+"/"+templateName+"_"+derived);
                 
-              //ADDITIONS BY TIRTH************************************//
-                // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW EXECUTION PARAMETER_VARIABLE TO THE EXPANDED TEMPLATE ARTIFACT
-                if(ans==true)
-                {
-                this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+expandedTemplateName+"_"+derived, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_ARTIFACT);
-                }
-              //************************************//
+//              //ADDITIONS BY TIRTH************************************//
+//                // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW EXECUTION PARAMETER_VARIABLE TO THE EXPANDED TEMPLATE ARTIFACT
+//                if(ans==true)
+//                {
+//                this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+expandedTemplateName+"_"+derived, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_ARTIFACT);
+//                }
+//              //************************************//
                 
                 this.addProperty(OPMWModel,
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date,
@@ -1006,6 +1170,20 @@ public class Mapper {
                     Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date, 
                     Constants.PROV_USED);            
         }
+        
+        
+        System.out.println("checking if the array 1 is filled:");
+        for(String s1:arrForExpandedTemplateParameters1)
+        	System.out.println(s1);
+        System.out.println("-----------------");
+        System.out.println("checking if the array 2 is filled:");
+        for(String s1:arrForExpandedTemplateParameters2)
+        	System.out.println(s1);
+        
+        
+        
+        
+        
         //annotation of outputs
         String getOutputs = Queries.queryStepOutputs();
         r = queryLocalWINGSResultsRepository(getOutputs);
@@ -1034,6 +1212,10 @@ public class Mapper {
                         Constants.PROV_AT_LOCATION, XSDDatatype.XSDanyURI);
         }
         //annotation of variable metadata
+        ArrayList<String> arrForExpandedTemplateData1=new ArrayList<>();
+        ArrayList<String> arrForExpandedTemplateData2=new ArrayList<>();
+        
+        
         String getVarMetadata = Queries.queryDataVariablesMetadata();
         r = queryLocalWINGSResultsRepository(getVarMetadata);
         String var, prop, obj, objName = null;
@@ -1070,14 +1252,15 @@ public class Mapper {
                         Constants.CONCEPT_DATA_VARIABLE+"/"+templateName+"_"+objName,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
                 
-                
-              //ADDITIONS BY TIRTH************************************//
-                // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW EXECUTION DATA_VARIABLE TO THE EXPANDED TEMPLATE DATA VARIABLE
-                if(ans==true)
-                {
-                this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName+"_"+objName, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_ARTIFACT);
-                }
-              //************************************//
+                arrForExpandedTemplateData1.add(Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date);
+                arrForExpandedTemplateData2.add(Constants.CONCEPT_DATA_VARIABLE+"/"+templateName+"_"+objName);
+//              //ADDITIONS BY TIRTH************************************//
+//                // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW EXECUTION DATA_VARIABLE TO THE EXPANDED TEMPLATE DATA VARIABLE
+//                if(ans==true)
+//                {
+//                this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName+"_"+objName, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_ARTIFACT);
+//                }
+//              //************************************//
                 
                 
                 //p-plan interop
@@ -1116,7 +1299,19 @@ public class Mapper {
             cP = PROVModel.createClass(Constants.PROV_ENTITY);
             cP.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+auxP);
         }
+        
+        
+        
+        System.out.println("checking if the array 1 is filled:");
+        for(String s1:arrForExpandedTemplateData1)
+        	System.out.println(s1);
+        System.out.println("-----------------");
+        System.out.println("checking if the array 2 is filled:");
+        for(String s1:arrForExpandedTemplateData2)
+        	System.out.println(s1);
 
+        
+        
         /***********************************************************************************
          * FILE EXPORT 
          ***********************************************************************************/        

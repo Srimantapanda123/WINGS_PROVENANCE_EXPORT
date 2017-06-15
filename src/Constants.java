@@ -75,6 +75,8 @@ public class Constants {
     public static final String OPMW_WORKFLOW_TEMPLATE = PREFIX_OPMW+CONCEPT_WORKFLOW_TEMPLATE;
     public static final String OPMW_WORKFLOW_TEMPLATE_ARTIFACT = PREFIX_OPMW+CONCEPT_WORKFLOW_TEMPLATE_ARTIFACT;
     public static final String OPMW_WORKFLOW_EXECUTION_ACCOUNT = PREFIX_OPMW+CONCEPT_WORKFLOW_EXECUTION_ACCOUNT;
+    public static final String OPMW_WORKFLOW_EXPANDED_TEMPLATE = PREFIX_OPMW + CONCEPT_WORKFLOW_EXPANDED_TEMPLATE;
+    public static final String OPMW_WORKFLOW_EXPANDED_TEMPLATE_PROCESS = PREFIX_OPMW + CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS;
     
     
     /*****
@@ -92,13 +94,11 @@ public class Constants {
     public static final String OPMW_PROP_IS_PARAMETER_OF_TEMPLATE = PREFIX_OPMW+"isParameterOfTemplate";
     public static final String OPMW_PROP_EXECUTED_IN_WORKFLOW_SYSTEM = PREFIX_OPMW+"executedInWorkflowSystem";
     
+    public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE = PREFIX_OPMW +"correspondsToAbstractTemplate";
+    
+    
     // *********ADDITIONS BY TIRTH
-    public static final String OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE = PREFIX_OPMW + "correspondsToExpandedTemplate";
-    public static final String OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE = PREFIX_OPMW + "connectsToExpandedTemplate";
-    public static final String OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_PROCESS = PREFIX_OPMW + "correspondsToExpandedTemplateProcess";
-    public static final String OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE_PROCESS = PREFIX_OPMW + "connectsToExpandedTemplateProcess";
-    public static final String OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_ARTIFACT = PREFIX_OPMW + "connectsToExpandedTemplateArtifact";
-    public static final String OPMW_PROP_CONNECTS_TO_EXPANDED_TEMPLATE_ARTIFACT = PREFIX_OPMW + "connectsToExpandedTemplateArtifact";
+   
 
     //
 
@@ -126,6 +126,7 @@ public class Constants {
     public static final String DATA_PROP_MODIFIED = "http://purl.org/dc/terms/modified";
     public static final String OPMW_COMPONENT_HAS_RULES = PREFIX_OPMW + "hasRules";
     public static final String OPMW_DATA_PROP_IS_COLLECTION = PREFIX_OPMW + "isCollection";
+    public static final String OPMW_DATA_PROP_TYPE_OF_COMPONENT = PREFIX_OPMW + "ComponentType";
     
     /*****
     Wings template constants. Prefixes
