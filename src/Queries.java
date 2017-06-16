@@ -36,6 +36,16 @@ public class Queries {
                 + "OPTIONAL{?m <"+Constants.WINGS_DATA_PROP_LAST_UPDATED_TIME+"> ?time.}}";
         return query;
     }
+    
+    
+    public static String queryMetadataforExpandedTemplate(){
+        String query = "SELECT ?contrib WHERE{"
+                + "?m a <"+Constants.WINGS_METADATA+">."
+                +"OPTIONAL{?m <"+Constants.WINGS_DATA_PROP_HAS_CONTRIBUTOR+"> ?contrib.}}";
+                
+        return query;
+    }
+    
 
     /**
      * Query to retrieve the components (to be able to link them to processes)
@@ -54,6 +64,16 @@ public class Queries {
                 + "OPTIONAL{?cb <"+Constants.WINGS_PROP_HAS_RULE+"> ?rule }}";
         return query;
     }
+   
+    
+    
+    public static String queryNodesforExpandedTemplate(){
+        String query = "SELECT ?n ?derivedFrom WHERE{"
+        		+ "?n a <"+Constants.WINGS_NODE+">."
+                +"?n <"+Constants.WINGS_PROP_DERIVED_FROM+"> ?derivedFrom. }";
+        return query;
+    }
+    
 
     /**
      * Query to retrieve artifacts (Data Variables in template)

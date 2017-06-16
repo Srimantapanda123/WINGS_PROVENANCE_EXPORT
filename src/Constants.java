@@ -41,7 +41,7 @@ public class Constants {
     public static final String CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS = "WorkflowExpandedTemplateProcess";
     public static final String CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE = "WorkflowExpandedTemplateParameterVariable";
     public static final String CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE = "WorkflowExpandedTemplateDataVariable";
-
+    public static final String CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_ARTIFACT = "WorkflowExpandedTemplateArtifact";
 
     //*******************//
     
@@ -77,7 +77,9 @@ public class Constants {
     public static final String OPMW_WORKFLOW_EXECUTION_ACCOUNT = PREFIX_OPMW+CONCEPT_WORKFLOW_EXECUTION_ACCOUNT;
     public static final String OPMW_WORKFLOW_EXPANDED_TEMPLATE = PREFIX_OPMW + CONCEPT_WORKFLOW_EXPANDED_TEMPLATE;
     public static final String OPMW_WORKFLOW_EXPANDED_TEMPLATE_PROCESS = PREFIX_OPMW + CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS;
-    
+    public static final String OPMW_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE = PREFIX_OPMW + CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE;
+    public static final String OPMW_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE = PREFIX_OPMW + CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE;
+    public static final String OPMW_WORKFLOW_EXPANDED_TEMPLATE_ARTIFACT = PREFIX_OPMW+CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_ARTIFACT;
     
     /*****
     OPMW relationships
@@ -94,7 +96,10 @@ public class Constants {
     public static final String OPMW_PROP_IS_PARAMETER_OF_TEMPLATE = PREFIX_OPMW+"isParameterOfTemplate";
     public static final String OPMW_PROP_EXECUTED_IN_WORKFLOW_SYSTEM = PREFIX_OPMW+"executedInWorkflowSystem";
     
+    
+    
     public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE = PREFIX_OPMW +"correspondsToAbstractTemplate";
+    public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PROCESS = PREFIX_OPMW+"isImplementationofTemplateProcess";
     
     
     // *********ADDITIONS BY TIRTH

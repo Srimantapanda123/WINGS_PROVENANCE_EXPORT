@@ -14,6 +14,7 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.FileManager;
@@ -37,6 +38,7 @@ public class Mapper {
     private OntModel OPMWModel;
     private OntModel PROVModel;
     private String taxonomyURL;
+    private OntModel ExpandedTemplateModel;
     public Mapper(){
 
     }
@@ -72,6 +74,12 @@ public class Mapper {
     private ResultSet queryLocalWINGSTemplateModelRepository(String queryIn) {
         return queryLocalRepository(queryIn, WINGSModelTemplate);
     }
+    
+    private ResultSet queryLocalExpandedTemplateRepository(String queryIn) {
+        return queryLocalRepository(queryIn, ExpandedTemplateModel);
+    }
+    
+    
     /**
      * Query the local results repository
      * @param queryIn input query
@@ -117,6 +125,20 @@ public class Mapper {
         //load the taxonomy as well
         loadTaxonomy(WINGSModelTemplate);
     }
+    
+    
+    public void loadExpandedTemplateFileToLocalRepository(String template, String modeFile){
+        
+    	InputStream in2 = FileManager.get().open(template.replaceAll("#.*$", ""));
+        if (in2 == null){
+            throw new IllegalArgumentException("File: " + template + " not found");
+        }
+        
+        ExpandedTemplateModel.read(in2, null, modeFile);
+        System.out.println("Expanded Template File "+template+" loaded into the execution results");
+
+    }
+    
     
     /**
      * Method to load the domain specific taxonomy. Used to determine the node types.
@@ -591,6 +613,7 @@ public class Mapper {
  * @param outFilenamePROV output name for the PROV serialization
  * @param suffix id to be added to identify uniquely certain resources
  * @return 
+ * @throws Exception 
  */
     //public String transformWINGSResultsToOPMW(String resultFile, String libraryFile, String modeFile, String outFilenameOPMW, String outFilenamePROV){
     public String transformWINGSResultsToOPMW(String resultFile, String libraryFile, String modeFile, 
@@ -599,6 +622,15 @@ public class Mapper {
 //    	//ADDITION BY TIRTH**************//
 //    	boolean ans=ExpandedTemplateLinkingCheckerforResults();
 //    	//**************//
+    	
+    	
+    	
+    	//NEW ADDITION BY TIRTH**************//
+    	 if(ExpandedTemplateModel!=null){
+    		 ExpandedTemplateModel.removeAll();//where we Expanded Template
+         }
+    	 ExpandedTemplateModel = ModelFactory.createOntologyModel();
+    	
     	
     	
         //clean previous transformations        
@@ -633,6 +665,10 @@ public class Mapper {
             expandedTemplateName=qs.getResource("?expandedTemplate").getLocalName();
 //            this.loadResultFileToLocalRepository(template.getURI(), modeFile);
 //            System.out.println("Loaded the original template successfully ...");
+            
+            ////NEW ADDITION BY TIRTH**************//
+            this.loadExpandedTemplateFileToLocalRepository(expandedTemplateURI, modeFile);
+            
             
             System.out.println("expanded template URI : "+expandedTemplateURI);
             this.loadResultFileToLocalRepository(expandedTemplateURI, modeFile);
@@ -712,9 +748,10 @@ public class Mapper {
         this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, Constants.CONCEPT_WORKFLOW_TEMPLATE + "/" + templateName, Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE);
         
         //THE EXPANDED TEMPLATE ONLY HAS METADATA-CONTRIBUTOR WHICH IS CAPTURED BELOW
-        String queryMetadataforExandedTemplate = Queries.queryMetadata();
+        String queryMetadataforExandedTemplate = Queries.queryMetadataforExpandedTemplate();
         r1 = null;
         r1 = queryLocalWINGSResultsRepository(queryMetadataforExandedTemplate);
+        
         while(r1.hasNext())
         {
         	System.out.println("inside for the contributor");
@@ -736,37 +773,46 @@ public class Mapper {
         System.out.println("---------------------");
         //NODE LINKING CODE
         ArrayList<String> arrForExpandedTemplateNodes=new ArrayList<>();
-        String queryNodesforExpandedTemplate = Queries.queryNodes();
-        r1 = null;
-        r1 = queryLocalWINGSResultsRepository(queryNodesforExpandedTemplate);
+        String queryNodesforExpandedTemplate = Queries.queryNodesforExpandedTemplate();
+
+        r1=null;
+        //ExpandedTemplateModel.write(System.out,"RDF/XML");
+        r1 = queryLocalExpandedTemplateRepository(queryNodesforExpandedTemplate);
+        System.out.println("hi im here");
+        
+      
         while(r1.hasNext()){
+        	System.out.println("no i got in but");
             QuerySolution qs = r1.next();
             Resource res = qs.getResource("?n");
-            Resource comp = qs.getResource("?c");
-            Resource typeComp = qs.getResource("?typeComp");
-            Literal rule = qs.getLiteral("?rule");
-            //Literal isConcrete = qs.getLiteral("?isConcrete");
+           // Resource comp = qs.getResource("?c");
+           // Resource typeComp = qs.getResource("?typeComp");
+            //Literal rule = qs.getLiteral("?rule");
+            Resource res2=qs.getResource("?derivedFrom");
+            System.out.println("node is :"+res.getLocalName()+" derived from "+res2.getLocalName());
+     
             System.out.println("this is inside the node linking new expanded");
-            System.out.println(res+" Node has component "+comp+" of type: "+ typeComp);//+ " which is concrete: "+isConcrete.getBoolean()
+           // System.out.println(res+" Node has component "+comp+" of type: "+ typeComp);//+ " which is concrete: "+isConcrete.getBoolean()
             //add each of the nodes as a UniqueTemplateProcess
             this.addIndividual(OPMWModel,expandedTemplateName+"_"+res.getLocalName(),Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE_PROCESS, "Workflow expanded template process "+res.getLocalName());
                
-            if(typeComp.isURIResource()){ //only adds the type if the type is a uRI (not a blank node)
-                String tempURI = encode(Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+templateName_+res.getLocalName());
-                OntClass cAux1 = OPMWModel.createClass(typeComp.getURI());//repeated tuples will not be duplicated
-                cAux1.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+tempURI);
-            }else{
-                System.out.println("ANON RESOURCE "+typeComp.getURI()+" ignored");
-            }
-            if(rule!=null){
-                //rules are strings
-                this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+res.getLocalName(),
-                    rule.getString(),                    
-                        Constants.WINGS_PROP_HAS_RULE);
-            }
+//            if(typeComp.isURIResource()){ //only adds the type if the type is a uRI (not a blank node)
+//                String tempURI = encode(Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+templateName_+res.getLocalName());
+//                OntClass cAux1 = OPMWModel.createClass(typeComp.getURI());//repeated tuples will not be duplicated
+//                cAux1.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+tempURI);
+//            }else{
+//                System.out.println("ANON RESOURCE "+typeComp.getURI()+" ignored");
+//            }
+//            if(rule!=null){
+//                //rules are strings
+//                this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+res.getLocalName(),
+//                    rule.getString(),                    
+//                        Constants.WINGS_PROP_HAS_RULE);
+//            }
             this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+res.getLocalName(),
                     Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,                    
                         Constants.OPMW_PROP_IS_STEP_OF_TEMPLATE);   
+            this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+res.getLocalName(), Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName+"_"+res2.getLocalName(), Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PROCESS);
             
             arrForExpandedTemplateNodes.add(res.getLocalName());
            
@@ -776,6 +822,234 @@ public class Mapper {
         for(String x: arrForExpandedTemplateNodes)
         	System.out.println(x);
         System.out.println();
+        
+        
+        
+        
+        //data variables capturing for the expanded template
+        String queryDataV = Queries.queryDataV2();
+        r1 = null;
+        r1 = queryLocalWINGSResultsRepository(queryDataV);
+//        ResultSetFormatter.out(r);
+        System.out.println("now going for data variables");
+        while(r1.hasNext()){
+        	System.out.println("inside data variables");
+            QuerySolution qs = r1.next();
+            Resource variable = qs.getResource("?d");
+            Resource type = qs.getResource("?t");
+            Literal dim = qs.getLiteral("?hasDim");            
+            this.addIndividual(OPMWModel,expandedTemplateName+"_"+variable.getLocalName(), Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE, "Data variable "+variable.getLocalName());
+
+            
+            //we add the individual as a workflowExpandedTemplateArtifact as well            
+            String aux = encode(Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName+"_"+variable.getLocalName());
+            OntClass cAux1 = OPMWModel.createClass(Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE_ARTIFACT);//repeated tuples will not be duplicated
+            cAux.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+aux);
+                   
+            if(dim!=null){//sometimes is null, but it shouldn't
+                this.addDataProperty(OPMWModel,Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName+"_"+variable.getLocalName(),
+                        ""+dim.getInt(), Constants.OPMW_DATA_PROP_HAS_DIMENSIONALITY, XSDDatatype.XSDint);
+                //System.out.println(res+" has dim: "+dim.getInt());
+            }
+            //types of data variables
+            if(type!=null){
+                //sometimes there are some blank nodes asserted as types in the ellaboration.
+                //This will remove the blank nodes.
+                if(type.isURIResource()){
+                    System.out.println(variable+" of type "+ type);
+                    //add the individual as an instance of another class, not as a new individual
+                    String nameEncoded = encode(Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName+"_"+variable.getLocalName());
+                    OntClass c = OPMWModel.createClass(type.getURI());
+                    c.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+nameEncoded);
+                }else{
+                    System.out.println("ANON RESOURCE "+type.getURI()+" ignored");
+                }
+            }else{
+                System.out.println(variable);
+            }
+            this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName+"_"+variable.getLocalName(),
+                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,
+                        Constants.OPMW_PROP_IS_VARIABLE_OF_TEMPLATE);
+        }
+        
+        
+        //parameter variables capturing for the expanded template
+        String queryParameterV = Queries.querySelectParameter();
+        r1 = null;
+        r1 = queryLocalWINGSResultsRepository(queryParameterV);
+        while(r1.hasNext()){
+        	System.out.println("now going for parameter variables");
+            QuerySolution qs = r1.next();
+            Resource res = qs.getResource("?p");
+//            Literal parValue = qs.getLiteral("?parValue");
+            System.out.println(res);
+            this.addIndividual(OPMWModel,expandedTemplateName+"_"+res.getLocalName(), Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE, "Parameter variable "+res.getLocalName());
+            
+            //add the parameter value as an artifact too
+            String aux = encode(Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+expandedTemplateName+"_"+res.getLocalName());
+            OntClass cAux1 = OPMWModel.createClass(Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE_ARTIFACT);//repeated tuples will not be duplicated
+            cAux.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+aux);
+            
+            this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+expandedTemplateName+"_"+res.getLocalName(),
+                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,                    
+                        Constants.OPMW_PROP_IS_PARAMETER_OF_TEMPLATE);
+        }
+        
+        
+        
+        String expandedTemplateName_=expandedTemplateName+"_";
+      //InputLinks == Used
+        String queryInputLinks = Queries.queryInputLinks();
+        r1 = null;
+        r1 = queryLocalWINGSResultsRepository(queryInputLinks);
+        while(r1.hasNext()){
+        	System.out.println("now going for input links");
+            QuerySolution qs = r1.next();
+            Resource resVar = qs.getResource("?var");
+            Resource resNode = qs.getResource("?dest");
+            String role = qs.getLiteral("?role").getString();            
+            this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName_+resNode.getLocalName(),
+                        Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName_+resVar.getLocalName(),
+                            Constants.OPMW_PROP_USES);
+            
+            if(role!=null){
+                System.out.println("Node "+resNode.getLocalName() +" Uses "+ resVar.getLocalName()+ " Role: "+role);
+                //add the roles as subproperty of used. This triple should be on the ontology.
+                this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName_+resNode.getLocalName(),
+                        Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName_+resVar.getLocalName(),
+                            Constants.PREFIX_EXTENSION+"usesAs_"+role);
+                //link the property as a subproperty of Used
+                this.createSubProperty(OPMWModel,Constants.OPMW_PROP_USES, Constants.PREFIX_EXTENSION+"usesAs_"+role);
+                //description of the new property
+                OntProperty propUsed = OPMWModel.getOntProperty(Constants.PREFIX_EXTENSION+"usesAs_"+role);
+                propUsed.addLabel("Property that indicates that a resource has been used as a "+role, "EN");
+            }
+        }
+        String queryInputLinksP = Queries.queryInputLinksP();
+        r1 = null;
+        r1 = queryLocalWINGSResultsRepository(queryInputLinksP);
+        while(r1.hasNext()){
+        	System.out.println("now going for inputp links");
+            QuerySolution qs = r1.next();
+            Resource resVar = qs.getResource("?var");
+            Resource resNode = qs.getResource("?dest");
+            String role = qs.getLiteral("?role").getString(); 
+            
+            this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName_+resNode.getLocalName(),
+                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+expandedTemplateName_+resVar.getLocalName(),
+                        Constants.OPMW_PROP_USES);
+           
+           
+            if(role!=null){
+                System.out.println("Node "+resNode.getLocalName() +" Uses "+ resVar.getLocalName()+ " Role: "+role);
+                //add the roles as subproperty of used. This triple should be on the ontology.
+                this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName_+resNode.getLocalName(),
+                        Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+expandedTemplateName_+resVar.getLocalName(),
+                            Constants.PREFIX_EXTENSION+"usesAs_"+role);
+                
+               
+                //link the property as a subproperty of Used
+                this.createSubProperty(OPMWModel,Constants.OPMW_PROP_USES, Constants.PREFIX_EXTENSION+"usesAs_"+role);
+                OntProperty propUsed = OPMWModel.getOntProperty(Constants.PREFIX_EXTENSION+"usesAs_"+role);
+                propUsed.addLabel("Property that indicates that a resource has been used as a "+role, "EN");
+//                System.out.println(resVar.getLocalName() +" type "+ qs.getResource("?t").getURI());
+            }
+        }
+
+        //OutputLInks == WasGeneratedBy
+        String queryOutputLinks = Queries.queryOutputLinks();
+        r1 = null;
+        r1 = queryLocalWINGSResultsRepository(queryOutputLinks);
+        while(r1.hasNext()){
+        	System.out.println("now going for ouput links");
+            QuerySolution qs = r1.next();
+            Resource resVar = qs.getResource("?var");
+            Resource resNode = qs.getResource("?orig");
+            String role = qs.getLiteral("?role").getString();  
+            
+            this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName_+resVar.getLocalName(),
+                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName_+resNode.getLocalName(),
+                    Constants.OPMW_PROP_IGB);
+            
+            
+                   
+            if(role!=null){
+                System.out.println("Artifact "+ resVar.getLocalName()+" Is generated by node "+resNode.getLocalName()+" Role "+role);
+                //add the roles as subproperty of used. This triple should be on the ontology.
+                this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName_+resVar.getLocalName(),
+                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName_+resNode.getLocalName(),
+                            Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+role);
+                //link the property as a subproperty of WGB
+                this.createSubProperty(OPMWModel,Constants.OPMW_PROP_IGB, Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+role);
+                OntProperty propGenerated = OPMWModel.getOntProperty(Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+role);
+                propGenerated.addLabel("Property that indicates that a resource has been generated as a "+role, "EN");
+            }
+        }
+        //InOutLink == Used and WasGeneratedBy
+        String queryInOutLinks = Queries.queryInOutLinks();
+        r1 = null;
+        r1 = queryLocalWINGSResultsRepository(queryInOutLinks);
+        while(r1.hasNext()){
+        	System.out.println("now going for inout links");
+            QuerySolution qs = r1.next();
+            Resource resVar = qs.getResource("?var");
+            Resource resNode = qs.getResource("?orig");
+            String roleOrig = qs.getLiteral("?origRole").getString();
+            Resource resNodeD = qs.getResource("?dest");
+            String roleDest = qs.getLiteral("?destRole").getString();
+            if(roleOrig!=null && roleDest!=null){
+                System.out.println("Artifact "+ resVar.getLocalName()+" is generated by node "+resNode.getLocalName()
+                        +" with role "+roleOrig+" and uses node "+resNodeD.getLocalName()
+                        +" with role "+ roleDest);
+            }
+            //they are all data variables
+            this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+templateName_+resVar.getLocalName(),
+                    Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName_+resNode.getLocalName(),
+                        Constants.OPMW_PROP_IGB);
+            this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName_+resNodeD.getLocalName(),
+                        Constants.CONCEPT_DATA_VARIABLE+"/"+templateName_+resVar.getLocalName(),
+                            Constants.OPMW_PROP_USES);
+                       
+            if(roleOrig!=null){                
+                this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName_+resVar.getLocalName(),
+                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName_+resNode.getLocalName(),
+                            Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+roleOrig);
+                //link the property as a subproperty of WGB
+                this.createSubProperty(OPMWModel,Constants.OPMW_PROP_IGB, Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+roleOrig);
+                OntProperty propGenerated = OPMWModel.getOntProperty(Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+roleOrig);
+                propGenerated.addLabel("Property that indicates that a resource has been generated as a "+roleOrig, "EN");
+            }
+            if(roleDest!=null){
+                //System.out.println("created role "+ Constants.PREFIX_ONTOLOGY_PROFILE+"used_"+roleDest.getLocalName());
+                this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName_+resNodeD.getLocalName(),
+                        Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName_+resVar.getLocalName(),
+                            Constants.PREFIX_EXTENSION+"usesAs_"+roleDest);
+                //link the property as a subproperty of Used
+                this.createSubProperty(OPMWModel,Constants.OPMW_PROP_USES, Constants.PREFIX_EXTENSION+"usesAs_"+roleDest);
+                OntProperty propUsed = OPMWModel.getOntProperty(Constants.PREFIX_EXTENSION+"usesAs_"+roleDest);
+                propUsed.addLabel("Property that indicates that a resource has been used as a "+roleDest, "EN");
+            }
+
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -966,7 +1240,7 @@ public class Mapper {
                 derivedFrom = stepName;
             }
             System.out.println("Derived from = "+derivedFrom);
-//            System.out.println(step +"\n\t "+ sStartT+"\n\t "+sEndT+"\n\t "+sStatus+"\n\t "+sCode);
+            System.out.println("after derived from "+stepName +"\n\t "+ sStartT+"\n\t "+sEndT+"\n\t "+sStatus+"\n\t "+sCode);
             //add each step with its metadata to the model Start and end time are reused from prov.
             this.addIndividual(OPMWModel,stepName+date, Constants.OPMW_WORKFLOW_EXECUTION_PROCESS, "Execution process "+stepName);
             //add type opmv:Process as well
@@ -1038,6 +1312,22 @@ public class Mapper {
             this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date,
                     Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName+"_"+derivedFrom,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_PROCESS);
+           
+            
+            
+            
+	        //NEW ADDITIONS BY TIRTH:
+	        this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date,
+	                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+stepName+date,
+	                        Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_PROCESS);
+            
+            
+            
+            
+            
+            
+            
+            
             System.out.println("the checking part is here:"+stepName +" ----> "+derivedFrom);
             
             arrForExpandedTemplate1.add(Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date);
@@ -1136,6 +1426,14 @@ public class Mapper {
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date,
                         Constants.CONCEPT_PARAMETER_VARIABLE+"/"+templateName+"_"+derived,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
+                
+                //NEW ADDITIONS BY TIRTH
+                this.addProperty(OPMWModel,
+                        Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date,
+                        Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+paramName+date,
+                        Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
+                
+                
                 arrForExpandedTemplateParameters1.add(Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date);
                 arrForExpandedTemplateParameters2.add(Constants.CONCEPT_PARAMETER_VARIABLE+"/"+templateName+"_"+derived);
                 
@@ -1250,6 +1548,11 @@ public class Mapper {
                 this.addProperty(OPMWModel,
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date,
                         Constants.CONCEPT_DATA_VARIABLE+"/"+templateName+"_"+objName,
+                        Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
+                
+                this.addProperty(OPMWModel,
+                        Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date,
+                        Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+var+date,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
                 
                 arrForExpandedTemplateData1.add(Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date);
