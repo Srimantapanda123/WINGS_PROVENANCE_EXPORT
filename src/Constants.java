@@ -100,7 +100,10 @@ public class Constants {
     
     public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE = PREFIX_OPMW +"correspondsToAbstractTemplate";
     public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PROCESS = PREFIX_OPMW+"isImplementationofTemplateProcess";
+    public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_DATA_VARIABLE = PREFIX_OPMW+"isImplementationofTemplateDataVariable";
     
+    
+    public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PARAMETER_VARIABLE = PREFIX_OPMW+"isImplementationofTemplateParameterVariable";
     
     // *********ADDITIONS BY TIRTH
    
@@ -132,6 +135,11 @@ public class Constants {
     public static final String OPMW_COMPONENT_HAS_RULES = PREFIX_OPMW + "hasRules";
     public static final String OPMW_DATA_PROP_IS_COLLECTION = PREFIX_OPMW + "isCollection";
     public static final String OPMW_DATA_PROP_TYPE_OF_COMPONENT = PREFIX_OPMW + "ComponentType";
+    
+    
+    public static final String  OPMW_PROP_IS_DATA_BINDING_OF_EXPANDED_TEMPLATE_DATA_VARIABLE = PREFIX_OPMW + "isDataBindingofExpandedTemplateDataVariable";
+    
+    public static final String OPMW_PROP_IS_PARVALUE_OF_EXPANDED_TEMPLATE_PARAMETER_VARIABLE = PREFIX_OPMW + "isParValueofExpandedTemplateParameterVariable";
     
     /*****
     Wings template constants. Prefixes

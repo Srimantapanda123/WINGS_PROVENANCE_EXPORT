@@ -52,7 +52,7 @@ public class Queries {
      * @return
      */
     public static String queryNodes(){
-        String query = "SELECT ?n ?c ?typeComp ?isConcrete ?rule WHERE{"
+        String query = "SELECT distinct ?n ?c ?typeComp ?isConcrete ?rule WHERE{"
                 + "?n a <"+Constants.WINGS_NODE+">."
                 + "?n <"+Constants.WINGS_PROP_HAS_COMPONENT+"> ?c."
                 + "?c <"+Constants.WINGS_PROP_HAS_COMPONENT_BINDING+"> ?cb."
@@ -68,9 +68,21 @@ public class Queries {
     
     
     public static String queryNodesforExpandedTemplate(){
-        String query = "SELECT ?n ?derivedFrom WHERE{"
+        String query = "SELECT distinct ?n ?derivedFrom ?c ?cb ?isConcrete ?rule WHERE{"
         		+ "?n a <"+Constants.WINGS_NODE+">."
-                +"?n <"+Constants.WINGS_PROP_DERIVED_FROM+"> ?derivedFrom. }";
+                +"?n <"+Constants.WINGS_PROP_DERIVED_FROM+"> ?derivedFrom. "
+                + "?c <"+Constants.WINGS_PROP_HAS_COMPONENT_BINDING+"> ?cb."
+                + "OPTIONAL{?cb <"+Constants.WINGS_DATA_PROP_IS_CONCRETE+"> ?isConcrete.}"
+                + "OPTIONAL{?cb <"+Constants.WINGS_PROP_HAS_RULE+"> ?rule }}";
+                
+        return query;
+    }
+    
+    public static String queryNodesforTemplateCondition(){
+        String query = "SELECT distinct ?n ?cb ?isConcrete WHERE{"
+        		+ "?n a <"+Constants.WINGS_NODE+">."
+                + "?c <"+Constants.WINGS_PROP_HAS_COMPONENT_BINDING+"> ?cb."
+                + "OPTIONAL{?cb <"+Constants.WINGS_DATA_PROP_IS_CONCRETE+"> ?isConcrete.}}";
         return query;
     }
     
@@ -113,6 +125,19 @@ public class Queries {
                 +"}";
         return query;
     }
+    
+    
+    public static String queryDataV2forExpandedTemplates(){
+        String query = "SELECT distinct ?type ?d ?db ?derivedFrom WHERE{"
+                + "?d a <"+Constants.WINGS_DATA_VARIABLE+">."
+                + "?d <"+Constants.WINGS_PROP_HAS_DATA_BINDING +"> ?db."
+                + "?d <"+Constants.WINGS_PROP_DERIVED_FROM +"> ?derivedFrom."
+                + "?d <"+"http://www.w3.org/1999/02/22-rdf-syntax-ns#type" +"> ?type."
+                +"}";
+        return query;
+    }
+    
+    
 
     /**
      * Query to retieve the parameters, also artifacts
@@ -124,7 +149,14 @@ public class Queries {
                 + "OPTIONAL{?p <"+Constants.WINGS_DATA_PROP_HAS_PARAMETER_VALUE+"> ?parValue}}";
         return query;
     }
-
+    
+    public static String querySelectParameterforExpandedTemplate(){
+        String query = "SELECT ?p ?parValue ?derivedFrom WHERE{"
+                + "?p a <"+Constants.WINGS_PARAMETER_VARIABLE+">."
+                + "?p <"+Constants.WINGS_PROP_DERIVED_FROM+"> ?derivedFrom."
+                + "OPTIONAL{?p <"+Constants.WINGS_DATA_PROP_HAS_PARAMETER_VALUE+"> ?parValue}}";
+        return query;
+    }
     /**
      * Query for retrieving the information of the used relationships
      * @return
@@ -143,6 +175,24 @@ public class Queries {
                 + "}";
         return query;
     }
+    
+    
+    public static String queryInputLinksforExpandedTemplate(){
+        String query = "SELECT ?var ?dest ?role ?derivedFrom WHERE{"
+                + "?iLink a <"+Constants.WINGS_INPUTLINK+">."
+                + "?iLink <"+Constants.WINGS_PROP_HAS_DESTINATION_NODE+"> ?dest."
+                + "?dest <"+Constants.WINGS_PROP_DERIVED_FROM+"> ?derivedFrom."
+                + "?iLink <"+Constants.WINGS_PROP_HAS_VARIABLE+"> ?var."
+                + "?var a <"+Constants.WINGS_DATA_VARIABLE+">."
+                + "OPTIONAL{"
+                + "?iLink <"+Constants.WINGS_PROP_HAS_DESTINATION_PORT+"> ?port."
+                + "?port <"+Constants.WINGS_PROP_SATISFIES_ROLE+"> ?r."
+                + "?r <"+Constants.WINGS_DATA_PROP_HAS_ROLE_ID+"> ?role."
+                + "}."
+                + "}";
+        return query;
+    }
+    
 
     /**
      * query for identifying the used relationships for parameters (slightly different)
@@ -192,9 +242,9 @@ public class Queries {
     public static String queryInOutLinks(){
         String query = "SELECT ?var ?orig ?origRole ?dest ?destRole WHERE{"
                 + "?ioLink a <"+Constants.WINGS_INOUTLINK+">."
-                + "?ioLink <"+Constants.WINGS_PROP_HAS_ORIGIN_NODE+">?orig."
-                + "?ioLink <"+Constants.WINGS_PROP_HAS_DESTINATION_NODE+">?dest."
-                + "?ioLink <"+Constants.WINGS_PROP_HAS_VARIABLE+">?var."
+                + "?ioLink <"+Constants.WINGS_PROP_HAS_ORIGIN_NODE+"> ?orig."
+                + "?ioLink <"+Constants.WINGS_PROP_HAS_DESTINATION_NODE+"> ?dest."
+                + "?ioLink <"+Constants.WINGS_PROP_HAS_VARIABLE+"> ?var."
                 + "OPTIONAL{"
                 + "?ioLink <"+Constants.WINGS_PROP_HAS_ORIGIN_PORT+"> ?portO."
                 + "?portO <"+Constants.WINGS_PROP_SATISFIES_ROLE+"> ?oRole."
