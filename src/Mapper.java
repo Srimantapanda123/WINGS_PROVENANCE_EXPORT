@@ -648,8 +648,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
             String wfInstance = qs.getResource("?wfInstance").getURI();
             expandedTemplateURI = qs.getResource("?expandedTemplate").getURI();
             expandedTemplateName=qs.getResource("?expandedTemplate").getLocalName();
-//            this.loadResultFileToLocalRepository(template.getURI(), modeFile);
-//            System.out.println("Loaded the original template successfully ...");
+
             
             ////NEW ADDITION BY TIRTH**************//
             //loading the expandedTemplate Model here
@@ -961,47 +960,14 @@ public void loadedTemplateFileCondition(String template, String modeFile){
 	                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+stepName+date,
 	                        Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_PROCESS);
             
-            
-            
-            
-            
-            
-            
-            
-            System.out.println("the checking part is here:"+stepName +" ----> "+derivedFrom);
-            
-            arrForExpandedTemplate1.add(Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date);
-            arrForExpandedTemplate2.add(Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName+"_"+derivedFrom);
-            
-            
-//          //ADDITIONS BY TIRTH************************************//
-//            // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW EXECUTION PROCESS TO THE EXPANDED TEMPLATE PROCESS
-//            if(ans==true)
-//            {
-//            this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+derivedFrom, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_PROCESS);
-//            }
-//          //************************************//
-            
+
            
             //p-plan interop
             this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date,
                     Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName+"_"+derivedFrom,
                         Constants.P_PLAN_PROP_CORRESPONDS_TO_STEP);
         }
-        
-        
-        System.out.println("checking if the array 1 is filled:");
-        for(String s1:arrForExpandedTemplate1)
-        	System.out.println(s1);
-        System.out.println("-----------------");
-        System.out.println("checking if the array 2 is filled:");
-        for(String s1:arrForExpandedTemplate2)
-        	System.out.println(s1);
-        
-        
-        
-        
-        
+
         //annotation of inputs
         String getInputs = Queries.queryStepInputs();
         r = queryLocalWINGSResultsRepository(getInputs);
@@ -1032,8 +998,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
             
         }
         //parameters are separated (in expanded template). 
-        ArrayList<String> arrForExpandedTemplateParameters1=new ArrayList<>();
-        ArrayList<String> arrForExpandedTemplateParameters2=new ArrayList<>();
+
         String getParams = Queries.querySelectStepParameterValues();
         r = queryLocalWINGSResultsRepository(getParams);
         String paramName, paramvalue, derived = null;
@@ -1073,17 +1038,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                         Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+paramName+date,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
                 
-                
-                arrForExpandedTemplateParameters1.add(Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date);
-                arrForExpandedTemplateParameters2.add(Constants.CONCEPT_PARAMETER_VARIABLE+"/"+templateName+"_"+derived);
-                
-//              //ADDITIONS BY TIRTH************************************//
-//                // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW EXECUTION PARAMETER_VARIABLE TO THE EXPANDED TEMPLATE ARTIFACT
-//                if(ans==true)
-//                {
-//                this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+expandedTemplateName+"_"+derived, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_ARTIFACT);
-//                }
-//              //************************************//
+
                 
                 this.addProperty(OPMWModel,
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date,
@@ -1109,14 +1064,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                     Constants.PROV_USED);            
         }
         
-        
-        System.out.println("checking if the array 1 is filled:");
-        for(String s1:arrForExpandedTemplateParameters1)
-        	System.out.println(s1);
-        System.out.println("-----------------");
-        System.out.println("checking if the array 2 is filled:");
-        for(String s1:arrForExpandedTemplateParameters2)
-        	System.out.println(s1);
+
         
         
         
@@ -1150,8 +1098,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                         Constants.PROV_AT_LOCATION, XSDDatatype.XSDanyURI);
         }
         //annotation of variable metadata
-        ArrayList<String> arrForExpandedTemplateData1=new ArrayList<>();
-        ArrayList<String> arrForExpandedTemplateData2=new ArrayList<>();
+
         
         
         String getVarMetadata = Queries.queryDataVariablesMetadata();
@@ -1194,17 +1141,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date,
                         Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+var+date,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
-                
-                arrForExpandedTemplateData1.add(Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date);
-                arrForExpandedTemplateData2.add(Constants.CONCEPT_DATA_VARIABLE+"/"+templateName+"_"+objName);
-//              //ADDITIONS BY TIRTH************************************//
-//                // 1. ADDING AN OBJECT PROPERTY FOR CONNECTING THE WORKFLOW EXECUTION DATA_VARIABLE TO THE EXPANDED TEMPLATE DATA VARIABLE
-//                if(ans==true)
-//                {
-//                this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+expandedTemplateName+"_"+objName, Constants.OPMW_PROP_CORRESPONDS_TO_EXPANDED_TEMPLATE_ARTIFACT);
-//                }
-//              //************************************//
-                
+          
                 
                 //p-plan interop
                 this.addProperty(OPMWModel,
@@ -1243,17 +1180,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
             cP.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+auxP);
         }
         
-        
-        
-        System.out.println("checking if the array 1 is filled:");
-        for(String s1:arrForExpandedTemplateData1)
-        	System.out.println(s1);
-        System.out.println("-----------------");
-        System.out.println("checking if the array 2 is filled:");
-        for(String s1:arrForExpandedTemplateData2)
-        	System.out.println(s1);
 
-        
         
         /***********************************************************************************
          * FILE EXPORT 
