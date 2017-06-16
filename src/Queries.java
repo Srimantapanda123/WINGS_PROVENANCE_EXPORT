@@ -70,6 +70,7 @@ public class Queries {
     public static String queryNodesforExpandedTemplate(){
         String query = "SELECT distinct ?n ?derivedFrom ?c ?cb ?isConcrete ?rule WHERE{"
         		+ "?n a <"+Constants.WINGS_NODE+">."
+        		+ "?n <"+Constants.WINGS_PROP_HAS_COMPONENT+"> ?c."
                 +"?n <"+Constants.WINGS_PROP_DERIVED_FROM+"> ?derivedFrom. "
                 + "?c <"+Constants.WINGS_PROP_HAS_COMPONENT_BINDING+"> ?cb."
                 + "OPTIONAL{?cb <"+Constants.WINGS_DATA_PROP_IS_CONCRETE+"> ?isConcrete.}"
@@ -79,10 +80,11 @@ public class Queries {
     }
     
     public static String queryNodesforTemplateCondition(){
-        String query = "SELECT distinct ?n ?cb ?isConcrete WHERE{"
+        String query = "SELECT distinct ?n ?c ?cb ?isConcrete WHERE{"
         		+ "?n a <"+Constants.WINGS_NODE+">."
-                + "?c <"+Constants.WINGS_PROP_HAS_COMPONENT_BINDING+"> ?cb."
-                + "OPTIONAL{?cb <"+Constants.WINGS_DATA_PROP_IS_CONCRETE+"> ?isConcrete.}}";
+        		+ "?n <"+Constants.WINGS_PROP_HAS_COMPONENT+"> ?c."
+        		+ "?c <"+Constants.WINGS_PROP_HAS_COMPONENT_BINDING+"> ?cb. "
+                + "OPTIONAL{?c <"+Constants.WINGS_DATA_PROP_IS_CONCRETE2+"> ?isConcrete.}}";
         return query;
     }
     

@@ -714,7 +714,11 @@ public void loadedTemplateFileCondition(String template, String modeFile){
         /*********************ADDITION BY TIRTH***************/
         /************** EXPANDED TEMPLATE CREATION CODE **************/
         /********************************************************/
-        createExpandedTemplate(accname,expandedTemplateName,expandedTemplateURI,templateName);
+        //check the condition and only then go for creating the expanded template
+        if(ans==true)
+        	createExpandedTemplate(accname,expandedTemplateName,expandedTemplateURI,templateName);
+        else
+        	System.out.println("SINCE ALL THE TEMPLATE PROCESSES ARE CONCRETE, NO EXPANDED TEMPLATE IS CREATED");
               
         /********************************************************/
         /************** EXPANDED TEMPLATE CREATION CODE ENDS **************/
@@ -1446,8 +1450,6 @@ public void loadedTemplateFileCondition(String template, String modeFile){
    //function to check to export the expanded template or not 
    public boolean ExportExpandedTemplate()
    {
-	// retrieval of the Components (nodes, with their components and if they are concrete or not)
-	   TemplateModelforCondition.write(System.out,"RDF/XML");
        String queryNodes = Queries.queryNodesforTemplateCondition();
        ResultSet r = null;
        r = queryConditionTemplateModel(queryNodes);
@@ -1455,19 +1457,12 @@ public void loadedTemplateFileCondition(String template, String modeFile){
        while(r.hasNext()){
     	   System.out.println("im inside boolean condition");
            QuerySolution qs = r.next();
-//           Resource res=qs.getResource("?n");
-//           Resource comp=qs.getResource("?c");
-//           Resource cb=qs.getResource("?cb");
-//           
-//           System.out.println(res.getLocalName() +"   "+comp.getLocalName()+"       "+cb.getLocalName());
+           Resource res = qs.getResource("?n");
+           Resource comp=qs.getResource("?c");
+           Resource cb=qs.getResource("?cb");
            Literal isConcrete = qs.getLiteral("?isConcrete");
-           
-           if(isConcrete!=null)
-           {
-           System.out.println("is concrete value is: "+isConcrete.getBoolean());
-           if(isConcrete.getBoolean()==false)
-        	   return true;
-           }
+           	if(isConcrete==null)
+           		return true;
        }
        return false;
    }

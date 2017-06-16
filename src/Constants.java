@@ -201,6 +201,7 @@ public class Constants {
     Wings data properties
     *****/
     public static final String WINGS_DATA_PROP_IS_CONCRETE = PREFIX_COMPONENT + "isConcrete";
+    public static final String WINGS_DATA_PROP_IS_CONCRETE2= PREFIX_WFLOW +"isConcrete";
     public static final String WINGS_DATA_PROP_HAS_DIMENSIONALITY = PREFIX_WFLOW + "hasDimensionality";
     public static final String WINGS_DATA_PROP_CREATED_FROM = PREFIX_WFLOW + "createdFrom";
     public static final String WINGS_DATA_PROP_HAS_CONTRIBUTOR = PREFIX_WFLOW + "hasContributor";
