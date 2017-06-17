@@ -956,9 +956,12 @@ public void loadedTemplateFileCondition(String template, String modeFile){
             
             
 	        //NEW ADDITIONS BY TIRTH:
+            if(ans==true)
+            {
 	        this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date,
 	                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+stepName+date,
 	                        Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_PROCESS);
+            }
             
 
            
@@ -997,8 +1000,8 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                         Constants.PROV_AT_LOCATION, XSDDatatype.XSDanyURI);
             
         }
+        
         //parameters are separated (in expanded template). 
-
         String getParams = Queries.querySelectStepParameterValues();
         r = queryLocalWINGSResultsRepository(getParams);
         String paramName, paramvalue, derived = null;
@@ -1033,10 +1036,13 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
                 
                 //NEW ADDITIONS BY TIRTH
+                if(ans==true)
+                {
                 this.addProperty(OPMWModel,
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date,
                         Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PARAMETER_VARIABLE+"/"+paramName+date,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
+                }
                 
 
                 
@@ -1141,6 +1147,16 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date,
                         Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+var+date,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
+                
+                
+              //NEW ADDITIONS BY TIRTH
+                if(ans==true)
+                {
+                this.addProperty(OPMWModel,
+                        Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date,
+                        Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_DATA_VARIABLE+"/"+var+date,
+                        Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
+                }
           
                 
                 //p-plan interop
@@ -1399,6 +1415,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
    {
 	 //capturing the relationship between the execution account and the expanded template
        this.addProperty(OPMWModel, accname, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE);
+       this.addProperty(OPMWModel, expandedTemplateName, Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+templateName, Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE);
  //    
        
        //CAPTURING THE EXPANDED TEMPLATE AS A GRAPH, CAPTURING THE VERSION NUMBER, AND DATA PROP FOR NATIVE SYSTEM TEMPLATE
@@ -1497,7 +1514,8 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            }
            this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+res.getLocalName(),
                    Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,                    
-                       Constants.OPMW_PROP_IS_STEP_OF_TEMPLATE);   
+                       Constants.OPMW_PROP_IS_STEP_OF_TEMPLATE); 
+           //is implementation of template process
            this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE_PROCESS+"/"+expandedTemplateName+"_"+res.getLocalName(), Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+res2.getLocalName(), Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PROCESS);
            
           
