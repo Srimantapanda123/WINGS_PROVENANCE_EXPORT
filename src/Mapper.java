@@ -846,6 +846,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                 Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+templateName,
                     Constants.PROV_WAS_INFLUENCED_BY);
         }
+        String newexpandedtemplatename=expandedTemplateName.substring(0,expandedTemplateName.indexOf('-'));
         
         /********************************************************/
         /********************* NODE LINKING**********************/
@@ -959,7 +960,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
             if(ans==true)
             {
 	        this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXECUTION_PROCESS+"/"+stepName+date,
-	                    Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+stepName+date,
+	                    Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+newexpandedtemplatename+"_"+stepName,
 	                        Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_PROCESS);
             }
             
@@ -1040,7 +1041,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                 {
                 this.addProperty(OPMWModel,
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+paramName+date,
-                        Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+paramName+date,
+                        Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+newexpandedtemplatename+"_"+paramName,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
                 }
                 
@@ -1151,7 +1152,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                 {
                 this.addProperty(OPMWModel,
                         Constants.CONCEPT_WORKFLOW_EXECUTION_ARTIFACT+"/"+var+date,
-                        Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+var+date,
+                        Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+newexpandedtemplatename+"_"+var,
                         Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE_ARTIFACT);
                 }
           
@@ -1226,7 +1227,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
         try {
             out = new FileOutputStream(outFile);
             model.write(out,"TURTLE");
-//            model.write(out,"RDF/XML");
+            //model.write(out,"RDF/XML");
             out.close();
         } catch (Exception ex) {
             System.out.println("Error while writing the model to file "+ex.getMessage());
@@ -1410,9 +1411,13 @@ public void loadedTemplateFileCondition(String template, String modeFile){
    
    public void createExpandedTemplate(String accname,String expandedTemplateName,String expandedTemplateURI,String templateName)
    {
+	   System.out.println("expanded template name: "+expandedTemplateName);
+	   int indexer=expandedTemplateName.indexOf('-');
+	   String expandedTemplateNewName=expandedTemplateName.substring(0, indexer);
+	   System.out.println("expanded template new name: "+expandedTemplateNewName);
 	 //capturing the relationship between the execution account and the expanded template
-       this.addProperty(OPMWModel, accname, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE);
-       this.addProperty(OPMWModel, expandedTemplateName, Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+templateName, Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE);
+       this.addProperty(OPMWModel, accname, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateNewName, Constants.OPMW_PROP_CORRESPONDS_TO_TEMPLATE);
+       this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateNewName, Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+templateName, Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE);
  //    
        
        //CAPTURING THE EXPANDED TEMPLATE AS A GRAPH, CAPTURING THE VERSION NUMBER, AND DATA PROP FOR NATIVE SYSTEM TEMPLATE
@@ -1430,20 +1435,25 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            Literal v = qs.getLiteral("?ver");
            
            //add the expanded template as a provenance graph
-           this.addIndividual(OPMWModel,expandedTemplateName, Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE, expandedTemplateName);
+           this.addIndividual(OPMWModel,expandedTemplateNewName, Constants.OPMW_WORKFLOW_EXPANDED_TEMPLATE, expandedTemplateNewName);
              
+           
+           
+           //P-PLAN FOR EXPANDED TEMPLATE
+           OntClass cParam = OPMWModel.createClass(Constants.P_PLAN_PLAN);
+           cParam.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+encode(expandedTemplateNewName));
+
+           
+           
            if(v!=null){
-               this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,""+ v.getInt(),
+               this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateNewName,""+ v.getInt(),
                        Constants.OPMW_DATA_PROP_VERSION_NUMBER, XSDDatatype.XSDint);
            }
            //add the uri of the original log file (native system template)
-           this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, 
+           this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateNewName, 
                    expandedTemplateURI,Constants.OPMW_DATA_PROP_HAS_NATIVE_SYSTEM_TEMPLATE, XSDDatatype.XSDanyURI);
            
-       }
-       
-       this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, Constants.CONCEPT_WORKFLOW_TEMPLATE + "/" + templateName, Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE);
-       
+       }    
        System.out.println("EXPANDED TEMPLATE ENDS");
        
        
@@ -1464,7 +1474,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            if(contrib!=null){
            	System.out.println("contributor is:"+contrib.getString());
                this.addIndividual(OPMWModel,contrib.getString(), Constants.OPM_AGENT,"Agent "+contrib.getString());
-               this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,Constants.CONCEPT_AGENT+"/"+contrib.getString(),
+               this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateNewName,Constants.CONCEPT_AGENT+"/"+contrib.getString(),
                        Constants.PROP_HAS_CONTRIBUTOR);
        
            }
@@ -1493,11 +1503,18 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            System.out.println("cb is :"+typeComp);
            System.out.println("this is inside the node linking new expanded");
            
-          
-           this.addIndividual(OPMWModel,"Expanded_"+expandedTemplateName+"_"+res.getLocalName(),Constants.OPMW_WORKFLOW_TEMPLATE_PROCESS, "Workflow expanded template process "+res.getLocalName());
+          // this.addIndividual(OPMWModel,templateName_+res.getLocalName(),Constants.OPMW_WORKFLOW_TEMPLATE_PROCESS, "Workflow template process "+res.getLocalName());
+          //CURRENTLY I AM COMMENTING THIS TO AVOID EXTRA STUFF BEING EXPORTED
+           this.addIndividual(OPMWModel,"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName(),Constants.OPMW_WORKFLOW_TEMPLATE_PROCESS, "Workflow expanded template process "+res.getLocalName());
               
+           
+         //p-plan interop
+           OntClass cStep = OPMWModel.createClass(Constants.P_PLAN_STEP);
+           cStep.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+encode("Expanded_"+expandedTemplateNewName+"_"+res.getLocalName()));
+           
+           
            if(typeComp.isURIResource()){ //only adds the type if the type is a uRI (not a blank node)
-               String tempURI = encode(Constants.OPMW_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName+res.getLocalName());
+               String tempURI = encode(Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName());
                OntClass cAux1 = OPMWModel.createClass(typeComp.getURI());//repeated tuples will not be duplicated
                cAux1.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+tempURI);
            }else{
@@ -1505,16 +1522,26 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            }
            if(rule!=null){
                //rules are strings
-               this.addDataProperty(OPMWModel,Constants.OPMW_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName+"_"+res.getLocalName(),
+               this.addDataProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName(),
                    rule.getString(),                    
                        Constants.WINGS_PROP_HAS_RULE);
            }
-           this.addProperty(OPMWModel,Constants.OPMW_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName+"_"+res.getLocalName(),
-                   Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,                    
+           
+
+           
+           
+           
+           //is step of template
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName(),
+                   Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateNewName,                    
                        Constants.OPMW_PROP_IS_STEP_OF_TEMPLATE); 
            //is implementation of template process
-           this.addProperty(OPMWModel, Constants.OPMW_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName+"_"+res.getLocalName(), Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+res2.getLocalName(), Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PROCESS);
+           this.addProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName(), Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+res2.getLocalName(), Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PROCESS);
            
+           //p-plan interop
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName(),
+                   Constants.CONCEPT_WORKFLOW_TEMPLATE+"/"+"Expanded_"+expandedTemplateName,                    
+                       Constants.P_PLAN_PROP_IS_STEP_OF_PLAN);
           
           
        }
@@ -1542,11 +1569,18 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            Resource type=qs.getResource("?type");
   
            System.out.println("data variable is : "+variable.getLocalName());
-           this.addIndividual(OPMWModel,"Expanded_"+expandedTemplateName+"_"+variable.getLocalName(),Constants.OPMW_DATA_VARIABLE, "Data variable "+variable.getLocalName());
+           this.addIndividual(OPMWModel,"Expanded_"+expandedTemplateNewName+"_"+variable.getLocalName(),Constants.OPMW_DATA_VARIABLE, "Data variable "+variable.getLocalName());
 
            
+         //p-plan interop
+           OntClass cVar = OPMWModel.createClass(Constants.P_PLAN_Variable);
+           cVar.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+Constants.CONCEPT_DATA_VARIABLE+"/"+encode("Expanded_"+expandedTemplateNewName+"_"+variable.getLocalName()));
+
+           
+           
+           
            //we add the individual as a workflowExpandedTemplateArtifact as well            
-           String aux = encode(Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName+"_"+variable.getLocalName());
+           String aux = encode(Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+variable.getLocalName());
            OntClass cAux1 = OPMWModel.createClass(Constants.OPMW_WORKFLOW_TEMPLATE_ARTIFACT);//repeated tuples will not be duplicated
            cAux1.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+aux);
                   
@@ -1558,7 +1592,7 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                if(type.isURIResource()){
                    System.out.println(variable+" of type "+ type);
                    //add the individual as an instance of another class, not as a new individual
-                   String nameEncoded = encode(Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName+"_"+variable.getLocalName());
+                   String nameEncoded = encode(Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+variable.getLocalName());
                    OntClass c = OPMWModel.createClass(type.getURI());
                    c.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+nameEncoded);
                }else{
@@ -1570,13 +1604,13 @@ public void loadedTemplateFileCondition(String template, String modeFile){
    
            
            //added is data binding of expanded template data variable dataproperty 
-           this.addDataProperty(OPMWModel, Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName,""+ databinding, Constants.OPMW_PROP_IS_DATA_BINDING_OF_EXPANDED_TEMPLATE_DATA_VARIABLE,XSDDatatype.XSDanyURI);
+          // this.addDataProperty(OPMWModel, Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName,""+ databinding, Constants.OPMW_PROP_IS_DATA_BINDING_OF_EXPANDED_TEMPLATE_DATA_VARIABLE,XSDDatatype.XSDanyURI);
                
            
            //is variable of expanded template
-           this.addProperty(OPMWModel, Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName+"_"+variable.getLocalName(), Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName, Constants.OPMW_PROP_IS_VARIABLE_OF_TEMPLATE);
+           this.addProperty(OPMWModel, Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+variable.getLocalName(), Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateNewName, Constants.OPMW_PROP_IS_VARIABLE_OF_TEMPLATE);
            //is implementation of template data variable
-           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName+"_"+variable.getLocalName(),Constants.CONCEPT_DATA_VARIABLE+"/"+templateName+"/"+derivedFrom.getLocalName(),Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_DATA_VARIABLE);
+           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+variable.getLocalName(),Constants.CONCEPT_DATA_VARIABLE+"/"+templateName+"/"+derivedFrom.getLocalName(),Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_DATA_VARIABLE);
        }
        System.out.println("DATA VARIABLES END");
        System.out.println("--------------------------");
@@ -1593,23 +1627,23 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            Literal parValue = qs.getLiteral("?parValue");
            Resource derivedFrom=qs.getResource("?derivedFrom");
            System.out.println(res);
-           this.addIndividual(OPMWModel,"Expanded_"+expandedTemplateName+"_"+res.getLocalName(), Constants.OPMW_PARAMETER_VARIABLE, "Parameter variable "+res.getLocalName());
+           this.addIndividual(OPMWModel,"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName(), Constants.OPMW_PARAMETER_VARIABLE, "Parameter variable "+res.getLocalName());
            
            //add the parameter value as an artifact(expanded template) too
-           String aux = encode(Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateName+"_"+res.getLocalName());
+           String aux = encode(Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName());
            OntClass cAux1 = OPMWModel.createClass(Constants.OPMW_WORKFLOW_TEMPLATE_ARTIFACT);//repeated tuples will not be duplicated
            cAux1.createIndividual(Constants.PREFIX_EXPORT_RESOURCE+aux);
            
            //is parameter of expanded template
-           this.addProperty(OPMWModel,Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateName+"_"+res.getLocalName(),
-                   Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateName,                    
+           this.addProperty(OPMWModel,Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName(),
+                   Constants.CONCEPT_WORKFLOW_EXPANDED_TEMPLATE+"/"+expandedTemplateNewName,                    
                        Constants.OPMW_PROP_IS_PARAMETER_OF_TEMPLATE);
            
            //is implementation of template parameter variable
-           this.addProperty(OPMWModel,Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateName+"_"+res.getLocalName(),Constants.CONCEPT_PARAMETER_VARIABLE+"/"+templateName+"/"+derivedFrom.getLocalName(),Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PARAMETER_VARIABLE);
+           this.addProperty(OPMWModel,Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName(),Constants.CONCEPT_PARAMETER_VARIABLE+"/"+templateName+"/"+derivedFrom.getLocalName(),Constants.OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PARAMETER_VARIABLE);
        
            //par value data-property for expanded template
-           this.addDataProperty(OPMWModel, Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateName+"_"+res.getLocalName(), parValue+"", Constants.OPMW_PROP_IS_PARVALUE_OF_EXPANDED_TEMPLATE_PARAMETER_VARIABLE);
+           this.addDataProperty(OPMWModel, Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+res.getLocalName(), parValue+"", Constants.OPMW_PROP_IS_PARVALUE_OF_EXPANDED_TEMPLATE_PARAMETER_VARIABLE);
            
        }
        System.out.println("PARAMETERS END");
@@ -1633,15 +1667,24 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            Resource resNode = qs.getResource("?dest");
            String role = qs.getLiteral("?role").getString();   
    
-           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNode.getLocalName(),
-        		   Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+        		   Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
                            Constants.OPMW_PROP_USES);
+           
+         //p-plan interop for EXPANDED TEMPLATE
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+                       Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                           Constants.P_PLAN_PROP_HAS_INPUT);
+           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                       Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+                           Constants.P_PLAN_PROP_IS_INTPUT_VAR_OF);
+           
            
            if(role!=null){
                System.out.println("Node "+resNode.getLocalName() +" Uses "+ resVar.getLocalName()+ " Role: "+role);
                //add the roles as subproperty of used. This triple should be on the ontology.
-               this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNode.getLocalName(),
-            		   Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
+               this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+            		   Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
                            Constants.PREFIX_EXTENSION+"usesAs_"+role);
                //link the property as a subproperty of Used
                this.createSubProperty(OPMWModel,Constants.OPMW_PROP_USES, Constants.PREFIX_EXTENSION+"usesAs_"+role);
@@ -1669,16 +1712,25 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            Resource resNode = qs.getResource("?dest");
            String role = qs.getLiteral("?role").getString(); 
            
-           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNode.getLocalName(),
-        		   Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+        		   Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
                        Constants.OPMW_PROP_USES);
           
           
+         //p-plan interop
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+                       Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                           Constants.P_PLAN_PROP_HAS_INPUT);
+           this.addProperty(OPMWModel,Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                       Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+                           Constants.P_PLAN_PROP_IS_INTPUT_VAR_OF);
+           
+           
            if(role!=null){
                System.out.println("Node "+resNode.getLocalName() +" Uses "+ resVar.getLocalName()+ " Role: "+role);
                //add the roles as subproperty of used. This triple should be on the ontology.
-               this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNode.getLocalName(),
-            		   Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
+               this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+            		   Constants.CONCEPT_PARAMETER_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
                            Constants.PREFIX_EXTENSION+"usesAs_"+role);
                
               
@@ -1708,17 +1760,26 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            Resource resNode = qs.getResource("?orig");
            String role = qs.getLiteral("?role").getString();  
            
-           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
-        		   Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNode.getLocalName(),
+           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+        		   Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
                    Constants.OPMW_PROP_IGB);
+           
+           
+         //p-plan interop
+           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                       Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+                           Constants.P_PLAN_PROP_IS_OUTPUT_VAR_OF);
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+                       Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                           Constants.P_PLAN_PROP_HAS_OUTPUT);   
            
            
                   
            if(role!=null){
                System.out.println("Artifact "+ resVar.getLocalName()+" Is generated by node "+resNode.getLocalName()+" Role "+role);
                //add the roles as subproperty of used. This triple should be on the ontology.
-               this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
-            		   Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNode.getLocalName(),
+               this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+            		   Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
                            Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+role);
                //link the property as a subproperty of WGB
                this.createSubProperty(OPMWModel,Constants.OPMW_PROP_IGB, Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+role);
@@ -1753,16 +1814,33 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                        +" with role "+ roleDest);
            }
            //they are all data variables
-           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
-        		   Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNode.getLocalName(),
+           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+        		   Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
                        Constants.OPMW_PROP_IGB);
-           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNodeD.getLocalName(),
-        		   Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNodeD.getLocalName(),
+        		   Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
                            Constants.OPMW_PROP_USES);
                       
+           
+         //p-plan interop
+           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                       Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+                           Constants.P_PLAN_PROP_IS_OUTPUT_VAR_OF);
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
+                       Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                           Constants.P_PLAN_PROP_HAS_OUTPUT);
+           this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNodeD.getLocalName(),
+                       Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                           Constants.P_PLAN_PROP_HAS_INPUT);
+           this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+                       Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNodeD.getLocalName(),
+                           Constants.P_PLAN_PROP_IS_INTPUT_VAR_OF);     
+           
+           
+           
            if(roleOrig!=null){                
-               this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
-            		   Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNode.getLocalName(),
+               this.addProperty(OPMWModel,Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
+            		   Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNode.getLocalName(),
                            Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+roleOrig);
                //link the property as a subproperty of WGB
                this.createSubProperty(OPMWModel,Constants.OPMW_PROP_IGB, Constants.PREFIX_EXTENSION+"isGeneratedByAs_"+roleOrig);
@@ -1771,8 +1849,8 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            }
            if(roleDest!=null){
                //System.out.println("created role "+ Constants.PREFIX_ONTOLOGY_PROFILE+"used_"+roleDest.getLocalName());
-               this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateName_+resNodeD.getLocalName(),
-            		   Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateName_+resVar.getLocalName(),
+               this.addProperty(OPMWModel,Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+"Expanded_"+expandedTemplateNewName+"_"+resNodeD.getLocalName(),
+            		   Constants.CONCEPT_DATA_VARIABLE+"/"+"Expanded_"+expandedTemplateNewName+"_"+resVar.getLocalName(),
                            Constants.PREFIX_EXTENSION+"usesAs_"+roleDest);
                //link the property as a subproperty of Used
                this.createSubProperty(OPMWModel,Constants.OPMW_PROP_USES, Constants.PREFIX_EXTENSION+"usesAs_"+roleDest);

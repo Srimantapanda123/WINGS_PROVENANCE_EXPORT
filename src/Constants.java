@@ -98,7 +98,7 @@ public class Constants {
     
     
     
-    public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE = PREFIX_OPMW +"correspondsToAbstractTemplate";
+    public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE = PREFIX_OPMW +"isImplementationofAbstractTemplate";
     public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_PROCESS = PREFIX_OPMW+"isImplementationofTemplateProcess";
     public static final String OPMW_PROP_IS_IMPLEMENTATION_OF_TEMPLATE_DATA_VARIABLE = PREFIX_OPMW+"isImplementationofTemplateDataVariable";
     
