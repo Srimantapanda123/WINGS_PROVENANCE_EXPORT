@@ -32,6 +32,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 
@@ -357,7 +359,9 @@ public void loadedTemplateFileCondition(String template, String modeFile){
                     rule.getString(),                    
                         Constants.WINGS_PROP_HAS_RULE);
                 
-                this.addDataProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName_+res.getLocalName(),rule.getString(), Constants.OPMW_COMPONENT_HAS_RULES);
+                //rules exported as OPMW data property
+                this.addDataProperty(OPMWModel, Constants.CONCEPT_WORKFLOW_TEMPLATE_PROCESS+"/"+templateName_+res.getLocalName(),
+                		rule.getString(), Constants.OPMW_COMPONENT_HAS_RULES);
             }
             if(isConcrete!=null)
             {
@@ -1451,6 +1455,8 @@ public void loadedTemplateFileCondition(String template, String modeFile){
            Resource res = qs.getResource("?n");
            componentNames.add(res.getLocalName());
        }
+       //SORT THE ARRAYLIST FOR THE NAMES OF THE COMPONENTS FOR FURTHER CONSISTENCY
+       Collections.sort(componentNames);
        StringBuilder sb=new StringBuilder();
        int indexer=expandedTemplateName.indexOf('-');
 	   //sb.append(expandedTemplateName.substring(0, indexer)+"_");
