@@ -3,20 +3,28 @@ public class Main {
 public static void main(String[] args) {
 	System.out.println("Transform an template to OPMW");
     Mapper instance = new Mapper();
-  String lib = "/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/executions/spacer/ultimatelib.owl";
+  String lib = "/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/lib.owl";
+  
   //String execution = "/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/executions/spacer/spacer-ex.owl";
   //String execution = "/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/executions/parasimple/cpexe.owl";
-String execution = "/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/ab2ex.owl";
+  //String execution = "/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/ab2ex.owl";
+  
+  String execution ="/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/abex1.owl";
+  //String execution ="/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/abex2.owl";
+  //String execution ="/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/abex3.owl";
+  
   
    //String template="/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/executions/parasimple/CaesarCypherParallelSimple.owl";
-   String template="/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/executions/abstractTest1/abstractTest1.owl";
+   //String template="/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/abstractTest2.owl";
+
+   String template="/Users/Tirthmehta/Desktop/WINGS_PROVENANCE_EXPORT_ISI/ab1temp.owl";
     String mode = "RDF/XML";
   String outFileOPMW = "testResultOPMW";
   String outFilePROV = "testResultPROV";
   String outFile = "testTemplateabstractTest1";
     
-   //String ans=instance.transformWINGSElaboratedTemplateToOPMW(template, mode, outFile, null);
-   String ans=instance.transformWINGSResultsToOPMW(execution, lib, mode, outFileOPMW, outFilePROV, null);
+  	//String ans=instance.transformWINGSElaboratedTemplateToOPMW(template, mode, outFile, null);
+  	String ans=instance.transformWINGSResultsToOPMW(execution, lib, mode, outFileOPMW, outFilePROV, null);
     System.out.println("--------------------------");
     System.out.println("location is :"+ans);
  
